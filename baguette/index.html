@@ -24,21 +24,21 @@
     <div x-data="pizza">
       <p>
         Number of pizzas:
-        <input type="number" x-model="count" style="width: 3.5em" />
+        <input type="number" x-model="baguetteCount" style="width: 3.5em" />
       </p>
       <p>
         Hydration:
         <input
           type="number"
-          x-model="hydration"
+          x-model="baguetteHydration"
           style="width: 5em; margin-right: 0.5em"
         />%
       </p>
       <p>
-        Ball size:
+        Baguette size:
         <input
           type="number"
-          x-model="ballSize"
+          x-model="baguetteBallSize"
           style="width: 4em; margin-right: 0.5em"
         />g
       </p>
@@ -46,20 +46,20 @@
         Poolish:
         <input
           type="number"
-          x-model="poolishPercent"
+          x-model="baguettePoolishPercent"
           style="width: 5em; margin-right: 0.5em"
         />%
       </p>
       <p>
         Yeast:
-        <input type="radio" value="dry" id="dry" x-model="yeastType" />
+        <input type="radio" value="dry" id="dry" x-model="baguetteYeastType" />
         <label for="dry">Dry</label>
       </p>
       <p>
         Salt:
         <input
           type="number"
-          x-model="saltPercent"
+          x-model="baguetteSaltPercent"
           style="width: 5em; margin-right: 0.5em"
         />%
       </p>
@@ -70,7 +70,6 @@
         <li>Total water: <span x-text="totalWater"></span>g</li>
         <li>Yeast: <span x-text="yeast"></span>g</li>
         <li>Salt: <span x-text="salt"></span>g</li>
-        <li>Unit: <span x-text="unit"></span>g</li>
       </ul>
       <h2>Poolish:</h2>
       <ul>
@@ -113,19 +112,22 @@
     document.addEventListener("alpine:init", () => {
       Alpine.data("pizza", function () {
         return {
-          count: this.$persist(4),
-          ballSize: this.$persist(220),
-          hydration: this.$persist(65),
-          poolishPercent: this.$persist(30),
-          yeastType: this.$persist("dry"),
-          saltPercent: this.$persist(2),
+          baguetteCount: this.$persist(4),
+          baguetteBallSize: this.$persist(220),
+          baguetteHydration: this.$persist(65),
+          baguettePoolishPercent: this.$persist(30),
+          baguetteYeastType: this.$persist("dry"),
+          baguetteSaltPercent: this.$persist(2),
           get totalDough() {
-            return this.ballSize * this.count;
+            return this.baguetteBallSize * this.baguetteCount;
           },
           get unit() {
             // percents of flour + water + salt + yeast
             let components =
-              100 + parseInt(this.hydration) + parseInt(this.saltPercent) + 0.7;
+              100 +
+              parseInt(this.baguetteHydration) +
+              parseInt(this.baguetteSaltPercent) +
+              0.7;
 
             return this.totalDough / components;
           },
@@ -135,14 +137,15 @@
             return Math.round(calculated);
           },
           get totalWater() {
-            const calculated = this.unit * this.hydration;
+            const calculated = this.unit * this.baguetteHydration;
             return Math.round(calculated);
           },
           get poolishWater() {
             return this.poolishFlour;
           },
           get poolishFlour() {
-            const calculated = (this.totalFlour * this.poolishPercent) / 100;
+            const calculated =
+              (this.totalFlour * this.baguettePoolishPercent) / 100;
             return Math.round(calculated);
           },
           get yeast() {
@@ -163,15 +166,15 @@
             return this.totalFlour - this.poolishFlour;
           },
           get salt() {
-            return Math.round((this.totalFlour * this.saltPercent) / 100);
+            return Math.round(this.unit * this.baguetteSaltPercent);
           },
           reset() {
-            this.count = 4;
-            this.ballSize = 220;
-            this.hydration = 65;
-            this.poolishPercent = 30;
-            this.yeastType = "dry";
-            this.saltPercent = 2;
+            this.baguetteCount = 3;
+            this.baguetteBallSize = 250;
+            this.baguetteHydration = 65;
+            this.baguettePoolishPercent = 30;
+            this.baguetteYeastType = "dry";
+            this.baguetteSaltPercent = 2;
           },
         };
       });
