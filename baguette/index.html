@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vito's Pizza Calculator</title>
+    <title>Baguette Calculator</title>
     <script
       defer
       src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.13.3/dist/cdn.min.js"
@@ -20,7 +20,7 @@
     </style>
   </head>
   <body>
-    <h1>Vito's Pizza Calculator</h1>
+    <h1>Baguette Calculator</h1>
     <div x-data="pizza">
       <p>
         Number of pizzas:
@@ -54,8 +54,6 @@
         Yeast:
         <input type="radio" value="dry" id="dry" x-model="yeastType" />
         <label for="dry">Dry</label>
-        <input type="radio" value="fresh" id="fresh" x-model="yeastType" />
-        <label for="fresh">Fresh</label>
       </p>
       <p>
         Salt:
@@ -70,34 +68,44 @@
       <ul>
         <li>Total flour: <span x-text="totalFlour"></span>g</li>
         <li>Total water: <span x-text="totalWater"></span>g</li>
-        <li>Honey: <span x-text="honey"></span>g</li>
         <li>Yeast: <span x-text="yeast"></span>g</li>
         <li>Salt: <span x-text="salt"></span>g</li>
+        <li>Unit: <span x-text="unit"></span>g</li>
       </ul>
       <h2>Poolish:</h2>
       <ul>
         <li>Water: <span x-text="poolishWater"></span>g</li>
         <li>Flour: <span x-text="poolishFlour"></span>g</li>
-        <li>Honey: <span x-text="honey"></span>g</li>
-        <li>Yeast: <span x-text="yeast"></span>g</li>
+        <li>Yeast: 1 pinch (~1g)</li>
       </ul>
       <h2>Dough:</h2>
       <ul>
         <li>Poolish: <span x-text="poolish"></span>g (all)</li>
         <li>Water: <span x-text="doughWater"></span>g</li>
         <li>Flour: <span x-text="doughFlour"></span>g</li>
+        <li>Yeast: <span x-text="doughYeats"></span>g</li>
         <li>Salt: <span x-text="salt"></span>g</li>
       </ul>
+
+      <h2>Preparation:</h2>
+      <ol>
+        <li>Make poolish, let ferment at room temperature for 14-16 hours.</li>
+        <li>Mix ingredients for dough and knead.</li>
+        <li>Bulk ferment for 50-70 minutes.</li>
+        <li>Divide, pre-shape and leave for 15 minutes.</li>
+        <li>Shape, put on couche and proof for 50-70 minutes again.</li>
+        <li>Pre-heat oven in the meantime.</li>
+        <li>Score and bake for ~25 minutes.</li>
+      </ol>
     </div>
     <footer>
       <p>
-        Created by @iben based on the recipe of
-        <a href="https://www.youtube.com/@vitoiacopelli">Vito Iacopelli</a>, the
-        best pizzaiolo of YouTube. <br />
+        Created by @iben based on the recipe of Kingdom Bread Tampa<br />
         View the preparation
-        <a href="https://www.youtube.com/watch?v=G-jPoROGHGE">here</a> or join
-        his class on
-        <a href="https://master-class.pizza">master-class.pizza</a>! ❤️🍕
+        <a
+          href="https://www.youtube.com/watch?v=iai3Af_Q1OE&list=FLM0aAIM12DDTgzG_3MadixQ"
+          >here</a
+        >
       </p>
     </footer>
   </body>
@@ -105,35 +113,29 @@
     document.addEventListener("alpine:init", () => {
       Alpine.data("pizza", function () {
         return {
-          count: this.$persist(10),
-          ballSize: this.$persist(250),
-          hydration: this.$persist(70),
-          poolishPercent: this.$persist(20),
+          count: this.$persist(4),
+          ballSize: this.$persist(220),
+          hydration: this.$persist(65),
+          poolishPercent: this.$persist(30),
           yeastType: this.$persist("dry"),
-          saltPercent: this.$persist(3),
+          saltPercent: this.$persist(2),
           get totalDough() {
             return this.ballSize * this.count;
           },
+          get unit() {
+            // percents of flour + water + salt + yeast
+            let components =
+              100 + parseInt(this.hydration) + parseInt(this.saltPercent) + 0.7;
+
+            return this.totalDough / components;
+          },
           get totalFlour() {
-            let yeastRatio;
-            if (this.yeastType == "fresh") {
-              yeastRatio = (this.poolishPercent / 100) * 0.0333;
-            } else {
-              yeastRatio = ((this.poolishPercent / 100) * 0.0333) / 2;
-            }
-            const honeyRatio = (this.poolishPercent / 100) * 0.01666;
-            const calculated =
-              this.totalDough /
-              (1 +
-                this.hydration / 100 +
-                this.saltPercent / 100 +
-                honeyRatio +
-                yeastRatio);
+            const calculated = this.unit * 100;
 
             return Math.round(calculated);
           },
           get totalWater() {
-            const calculated = (this.totalFlour * this.hydration) / 100;
+            const calculated = this.unit * this.hydration;
             return Math.round(calculated);
           },
           get poolishWater() {
@@ -143,26 +145,19 @@
             const calculated = (this.totalFlour * this.poolishPercent) / 100;
             return Math.round(calculated);
           },
-          get honey() {
-            return Math.round(this.poolishFlour * 0.0166);
-          },
           get yeast() {
-            let calculated;
-            if (this.yeastType == "fresh") {
-              calculated = this.poolishFlour * 0.0333;
-            } else {
-              calculated = (this.poolishFlour * 0.0333) / 2;
-            }
+            let calculated = Math.ceil(this.unit * 0.7);
 
-            return Math.round(calculated);
+            return calculated;
+          },
+          get doughYeats() {
+            return this.yeast - 1;
           },
           get doughWater() {
             return Math.round(this.totalWater - this.poolishWater);
           },
           get poolish() {
-            return (
-              this.poolishFlour + this.poolishWater + this.yeast + this.honey
-            );
+            return this.poolishFlour + this.poolishWater + this.yeast - 1;
           },
           get doughFlour() {
             return this.totalFlour - this.poolishFlour;
@@ -171,12 +166,12 @@
             return Math.round((this.totalFlour * this.saltPercent) / 100);
           },
           reset() {
-            this.count = 10;
-            this.ballSize = 260;
-            this.hydration = 64.516129;
-            this.poolishPercent = 19.35;
+            this.count = 4;
+            this.ballSize = 220;
+            this.hydration = 65;
+            this.poolishPercent = 30;
             this.yeastType = "dry";
-            this.saltPercent = 2.56;
+            this.saltPercent = 2;
           },
         };
       });
