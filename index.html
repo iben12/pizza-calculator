@@ -117,7 +117,7 @@
           get unit() {
             // percents of flour + water + salt + yeast
             let components =
-              100 + parseInt(this.hydration) + parseInt(this.saltPercent) + 0.7;
+              100 + parseInt(this.hydration) + parseInt(this.saltPercent) + 0.4;
 
             return this.totalDough / components;
           },
@@ -141,7 +141,7 @@
             return Math.round(this.poolishFlour * 0.015);
           },
           get yeast() {
-            let calculated = Math.ceil(this.unit * 0.7);
+            let calculated = Math.ceil(this.unit * 0.4);
 
             return calculated;
           },
