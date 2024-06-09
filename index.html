@@ -114,50 +114,39 @@
           get totalDough() {
             return this.ballSize * this.count;
           },
+          get unit() {
+            // percents of flour + water + salt + yeast
+            let components =
+              100 + parseInt(this.hydration) + parseInt(this.saltPercent) + 0.7;
+
+            return this.totalDough / components;
+          },
           get totalFlour() {
-            let yeastRatio;
-            if (this.yeastType == "fresh") {
-              yeastRatio = (this.poolishPercent / 100) * 0.0333;
-            } else {
-              yeastRatio = ((this.poolishPercent / 100) * 0.0333) / 2;
-            }
-            const honeyRatio = (this.poolishPercent / 100) * 0.01666;
-            const calculated =
-              this.totalDough /
-              (1 +
-                this.hydration / 100 +
-                this.saltPercent / 100 +
-                honeyRatio +
-                yeastRatio);
+            const calculated = this.unit * 100;
 
             return Math.round(calculated);
           },
           get totalWater() {
-            const calculated = (this.totalFlour * this.hydration) / 100;
+            const calculated = this.unit * this.hydration;
             return Math.round(calculated);
-          },
-          get poolishWater() {
-            return this.poolishFlour;
           },
           get poolishFlour() {
             const calculated = (this.totalFlour * this.poolishPercent) / 100;
             return Math.round(calculated);
           },
+          get poolishWater() {
+            return this.poolishFlour;
+          },
           get honey() {
-            return Math.round(this.poolishFlour * 0.0166);
+            return Math.round(this.poolishFlour * 0.015);
           },
           get yeast() {
-            let calculated;
-            if (this.yeastType == "fresh") {
-              calculated = this.poolishFlour * 0.0333;
-            } else {
-              calculated = (this.poolishFlour * 0.0333) / 2;
-            }
+            let calculated = Math.ceil(this.unit * 0.7);
 
-            return Math.round(calculated);
+            return calculated;
           },
           get doughWater() {
-            return Math.round(this.totalWater - this.poolishWater);
+            return this.totalWater - this.poolishWater;
           },
           get poolish() {
             return (
