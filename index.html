@@ -68,6 +68,8 @@
         <li>Water: <span x-text="doughWater"></span>g</li>
         <li>Flour: <span x-text="doughFlour"></span>g</li>
         <li>Salt: <span x-text="salt"></span>g</li>
+        <li>Olive Oil: <span x-text="oil"></span>g <span style="font-size:0.9rem">(optional, recommended for roman
+            style)</span></li>
       </ul>
   </div>
   <footer>
@@ -159,6 +161,9 @@
         },
         get salt() {
           return Math.round((this.totalFlour * this.saltPercent) / 100);
+        },
+        get oil() {
+          return Math.round(this.totalFlour * 0.05);
         },
         reset() {
           this.count = 8;
