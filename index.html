@@ -1,174 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vito's Pizza Calculator</title>
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.13.3/dist/cdn.min.js"
-    ></script>
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"
-    ></script>
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
-    <style>
-      ul {
-        list-style-type: none;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Vito's Pizza Calculator</h1>
-    <div x-data="pizza">
-      <p>
-        Number of pizzas:
-        <input type="number" x-model="count" style="width: 3.5em" />
-      </p>
-      <p>
-        Hydration:
-        <input
-          type="number"
-          x-model="hydration"
-          style="width: 5em; margin-right: 0.5em"
-        />%
-      </p>
-      <p>
-        Ball size:
-        <input
-          type="number"
-          x-model="ballSize"
-          style="width: 4em; margin-right: 0.5em"
-        />g
-      </p>
-      <p>
-        Poolish:
-        <input
-          type="number"
-          x-model="poolishPercent"
-          style="width: 5em; margin-right: 0.5em"
-        />%
-      </p>
-      <p>
-        Yeast:
-        <input type="radio" value="dry" id="dry" x-model="yeastType" />
-        <label for="dry">Dry</label>
-        <input type="radio" value="fresh" id="fresh" x-model="yeastType" />
-        <label for="fresh">Fresh</label>
-      </p>
-      <p>
-        Salt:
-        <input
-          type="number"
-          x-model="saltPercent"
-          style="width: 5em; margin-right: 0.5em"
-        />%
-      </p>
-      <p><button @click="reset">Reset</button></p>
-      <h2>Ingredients:</h2>
-      <ul>
-        <li>Total flour: <span x-text="totalFlour"></span>g</li>
-        <li>Total water: <span x-text="totalWater"></span>g</li>
-        <li>Honey: <span x-text="honey"></span>g</li>
-        <li>Yeast: <span x-text="yeast"></span>g</li>
-        <li>Salt: <span x-text="salt"></span>g</li>
-      </ul>
-      <h2>Poolish:</h2>
-      <ul>
-        <li>Water: <span x-text="poolishWater"></span>g</li>
-        <li>Flour: <span x-text="poolishFlour"></span>g</li>
-        <li>Honey: <span x-text="honey"></span>g</li>
-        <li>Yeast: <span x-text="yeast"></span>g</li>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vito's Pizza Calculator</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.13.3/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+  <style>
+    ul {
+      list-style-type: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Vito's Pizza Calculator</h1>
+  <div x-data="pizza">
+    <p>
+      Number of pizzas:
+      <input type="number" x-model="count" style="width: 3.5em" />
+    </p>
+    <p>
+      Hydration:
+      <input type="number" x-model="hydration" style="width: 5em; margin-right: 0.5em" />%
+    </p>
+    <p>
+      Ball size:
+      <input type="number" x-model="ballSize" style="width: 4em; margin-right: 0.5em" />g
+    </p>
+    <p>
+      Poolish:
+      <input type="number" x-model="poolishPercent" style="width: 5em; margin-right: 0.5em" />%
+    </p>
+    <p>
+      Yeast:
+      <input type="radio" value="dry" id="dry" x-model="yeastType" />
+      <label for="dry">Dry</label>
+      <input type="radio" value="fresh" id="fresh" x-model="yeastType" />
+      <label for="fresh">Fresh</label>
+    </p>
+    <p>
+      Salt:
+      <input type="number" x-model="saltPercent" style="width: 5em; margin-right: 0.5em" />%
+    </p>
+    <p><button @click="reset">Reset</button></p>
+    <h2>Ingredients:</h2>
+    <ul>
+      <li>Total flour: <span x-text="totalFlour"></span>g</li>
+      <li>Total water: <span x-text="totalWater"></span>g</li>
+      <li>Honey: <span x-text="honey"></span>g</li>
+      <li>Yeast: <span x-text="yeast"></span>g</li>
+      <li>Salt: <span x-text="salt"></span>g</li>
+    </ul>
+    <h2 x-show="havePoolish"">Poolish:</h2>
+    <ul x-show=" havePoolish"">
+      <li>Water: <span x-text="poolishWater"></span>g</li>
+      <li>Flour: <span x-text="poolishFlour"></span>g</li>
+      <li>Honey: <span x-text="honey"></span>g</li>
+      <li>Yeast: <span x-text="yeast"></span>g</li>
       </ul>
       <h2>Dough:</h2>
       <ul>
-        <li>Poolish: <span x-text="poolish"></span>g (all)</li>
+        <li x-show="havePoolish">Poolish: <span x-text="poolish"></span>g (all)</li>
+        <li x-show="!havePoolish">Yeast: <span x-text="yeast"></span>g</li>
         <li>Water: <span x-text="doughWater"></span>g</li>
         <li>Flour: <span x-text="doughFlour"></span>g</li>
         <li>Salt: <span x-text="salt"></span>g</li>
       </ul>
-    </div>
-    <footer>
-      <p>
-        Created by @iben based on the recipe of
-        <a href="https://www.youtube.com/@vitoiacopelli">Vito Iacopelli</a>, the
-        best pizzaiolo of YouTube. <br />
-        View the preparation
-        <a href="https://www.youtube.com/watch?v=G-jPoROGHGE">here</a> or join
-        his class on
-        <a href="https://master-class.pizza">master-class.pizza</a>! ❤️🍕
-      </p>
-    </footer>
-  </body>
-  <script>
-    document.addEventListener("alpine:init", () => {
-      Alpine.data("pizza", function () {
-        return {
-          count: this.$persist(10),
-          ballSize: this.$persist(250),
-          hydration: this.$persist(70),
-          poolishPercent: this.$persist(20),
-          yeastType: this.$persist("dry"),
-          saltPercent: this.$persist(3),
-          get totalDough() {
-            return this.ballSize * this.count;
-          },
-          get unit() {
-            // percents of flour + water + salt + yeast
-            let components =
-              100 + parseInt(this.hydration) + parseInt(this.saltPercent) + 0.4;
+  </div>
+  <footer>
+    <p>
+      Created by @iben based on the recipe of
+      <a href="https://www.youtube.com/@vitoiacopelli">Vito Iacopelli</a>, the
+      best pizzaiolo of YouTube. <br />
+      View the preparation
+      <a href="https://www.youtube.com/watch?v=G-jPoROGHGE">here</a> or join
+      his class on
+      <a href="https://master-class.pizza">master-class.pizza</a>! ❤️🍕
+    </p>
+  </footer>
+</body>
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("pizza", function () {
+      return {
+        count: this.$persist(10),
+        ballSize: this.$persist(250),
+        hydration: this.$persist(70),
+        poolishPercent: this.$persist(20),
+        yeastType: this.$persist("dry"),
+        saltPercent: this.$persist(3),
+        get totalDough() {
+          return this.ballSize * this.count;
+        },
+        get totalFlour() {
+          const flourUnit = 1 + this.hydration / 100 + this.saltPercent / 100
 
-            return this.totalDough / components;
-          },
-          get totalFlour() {
-            const calculated = this.unit * 100;
+          let yeastUnit = 0
 
-            return Math.round(calculated);
-          },
-          get totalWater() {
-            const calculated = this.unit * this.hydration;
-            return Math.round(calculated);
-          },
-          get poolishFlour() {
-            const calculated = (this.totalFlour * this.poolishPercent) / 100;
-            return Math.round(calculated);
-          },
-          get poolishWater() {
-            return this.poolishFlour;
-          },
-          get honey() {
-            return Math.round(this.poolishFlour * 0.015);
-          },
-          get yeast() {
-            let calculated = Math.ceil(this.unit * 0.4);
+          if (this.havePoolish) {
+            yeastUnit += this.poolishPercent / 100 * 0.015
+          }
+          else {
+            yeastUnit += 0.02 / 3
+          }
 
-            return calculated;
-          },
-          get doughWater() {
-            return this.totalWater - this.poolishWater;
-          },
-          get poolish() {
-            return (
-              this.poolishFlour + this.poolishWater + this.yeast + this.honey
-            );
-          },
-          get doughFlour() {
-            return this.totalFlour - this.poolishFlour;
-          },
-          get salt() {
-            return Math.round((this.totalFlour * this.saltPercent) / 100);
-          },
-          reset() {
-            this.count = 10;
-            this.ballSize = 260;
-            this.hydration = 64.516129;
-            this.poolishPercent = 19.35;
-            this.yeastType = "dry";
-            this.saltPercent = 2.56;
-          },
-        };
-      });
+          if (this.yeastType == "fresh") {
+            yeastUnit *= 3
+          }
+
+          const flour = this.totalDough / (flourUnit + yeastUnit)
+
+          return Math.round(flour);
+        },
+        get totalWater() {
+          const water = this.totalFlour * this.hydration / 100;
+          return Math.round(water);
+        },
+        get havePoolish() {
+          return this.poolishPercent > 0;
+        },
+        get poolishFlour() {
+          const calculated = (this.totalFlour * this.poolishPercent) / 100;
+          return Math.round(calculated);
+        },
+        get poolishWater() {
+          return this.poolishFlour;
+        },
+        get honey() {
+          return Math.round(this.poolishFlour * 0.015);
+        },
+        get yeast() {
+          let yeast;
+          if (this.havePoolish) {
+            yeast = Math.ceil(this.poolishFlour * 0.015);
+          } else {
+            yeast = Math.ceil(this.totalFlour * 0.02 / 3);
+          }
+
+          if (this.yeastType == "fresh") {
+            yeast = 3 * yeast
+          }
+
+          return yeast;
+        },
+        get doughWater() {
+          return this.totalWater - this.poolishWater;
+        },
+        get poolish() {
+          return (
+            this.poolishFlour + this.poolishWater + this.yeast + this.honey
+          );
+        },
+        get doughFlour() {
+          return this.totalFlour - this.poolishFlour;
+        },
+        get salt() {
+          return Math.round((this.totalFlour * this.saltPercent) / 100);
+        },
+        reset() {
+          this.count = 8;
+          this.ballSize = 240;
+          this.hydration = 65;
+          this.poolishPercent = 30;
+          this.yeastType = "dry";
+          this.saltPercent = 2.5;
+        },
+      };
     });
-  </script>
+  });
+</script>
+
 </html>
