@@ -80,27 +80,27 @@
     <p><button @click="reset">Reset</button></p>
     <h2>Ingredients:</h2>
     <ul>
-      <li>Total flour: <span x-text="totalFlour"></span>g</li>
-      <li>Total water: <span x-text="totalWater"></span>g</li>
-      <li>Honey: <span x-text="honey"></span>g</li>
-      <li>Yeast: <span x-text="yeast"></span>g</li>
-      <li>Salt: <span x-text="salt"></span>g</li>
+      <li>Total flour: <span x-text="totalFlour"></span> g</li>
+      <li>Total water: <span x-text="totalWater"></span> g</li>
+      <li>Honey: <span x-text="honey"></span> g</li>
+      <li>Yeast: <span x-text="yeast"></span> g</li>
+      <li>Salt: <span x-text="salt"></span> g</li>
     </ul>
     <h2 x-show="havePoolish"">Poolish:</h2>
     <ul x-show=" havePoolish"">
-      <li>Water: <span x-text="poolishWater"></span>g</li>
-      <li>Flour: <span x-text="poolishFlour"></span>g</li>
-      <li>Honey: <span x-text="honey"></span>g</li>
-      <li>Yeast: <span x-text="yeast"></span>g</li>
+      <li>Water: <span x-text="poolishWater"></span> g</li>
+      <li>Flour: <span x-text="poolishFlour"></span> g</li>
+      <li>Honey: <span x-text="honey"></span> g</li>
+      <li>Yeast: <span x-text="yeast"></span> g</li>
       </ul>
       <h2>Dough:</h2>
       <ul>
-        <li x-show="havePoolish">Poolish: <span x-text="poolish"></span>g (all)</li>
-        <li x-show="!havePoolish">Yeast: <span x-text="yeast"></span>g</li>
-        <li>Water: <span x-text="doughWater"></span>g</li>
-        <li>Flour: <span x-text="doughFlour"></span>g</li>
-        <li>Salt: <span x-text="salt"></span>g</li>
-        <li>Olive Oil: <span x-text="oil"></span>g <span style="font-size:0.9rem">(optional, recommended for roman
+        <li x-show="havePoolish">Poolish: <span x-text="poolish"></span> g (all)</li>
+        <li x-show="!havePoolish">Yeast: <span x-text="yeast"></span> g</li>
+        <li>Water: <span x-text="doughWater"></span> g</li>
+        <li>Flour: <span x-text="doughFlour"></span> g</li>
+        <li>Salt: <span x-text="salt"></span> g</li>
+        <li>Olive Oil: <span x-text="oil"></span> g <span style="font-size:0.9rem">(optional, recommended for roman
             style)</span></li>
       </ul>
   </div>
