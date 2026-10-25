@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Baguette Calculator</title>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.13.3/dist/cdn.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"
+    ></script>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+    <style>
+      ul {
+        list-style-type: none;
+      }
+
+      nav[aria-label="Main navigation"] {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      nav[aria-label="Main navigation"] a {
+        display: inline-block;
+        padding: 0.5rem 0.9rem;
+        border: 1px solid currentColor;
+        border-radius: 0.4rem;
+        background: Canvas;
+        color: CanvasText;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      nav[aria-label="Main navigation"] a[aria-current="page"] {
+        background: Highlight;
+        color: HighlightText;
+      }
+
+      nav[aria-label="Main navigation"] a:focus-visible {
+        outline: 3px solid Highlight;
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav aria-label="Main navigation">
+      <a href="../index.html">Pizza</a>
+      <a href="../baguette/index.html">Baguette</a>
+      <a href="index.html" aria-current="page">Focaccia</a>
+    </nav>
+    <h1>Baguette Calculator</h1>
+    <div x-data="pizza">
+      <p>
+        Number of pizzas:
+        <input type="number" x-model="baguetteCount" style="width: 3.5em" />
+      </p>
+      <p>
+        Hydration:
+        <input
+          type="number"
+          x-model="baguetteHydration"
+          style="width: 5em; margin-right: 0.5em"
+        />%
+      </p>
+      <p>
+        Baguette size:
+        <input
+          type="number"
+          x-model="baguetteBallSize"
+          style="width: 4em; margin-right: 0.5em"
+        />g
+      </p>
+      <p>
+        Poolish:
+        <input
+          type="number"
+          x-model="baguettePoolishPercent"
+          style="width: 5em; margin-right: 0.5em"
+        />%
+      </p>
+      <p>
+        Yeast:
+        <input type="radio" value="dry" id="dry" x-model="baguetteYeastType" />
+        <label for="dry">Dry</label>
+      </p>
+      <p>
+        Salt:
+        <input
+          type="number"
+          x-model="baguetteSaltPercent"
+          style="width: 5em; margin-right: 0.5em"
+        />%
+      </p>
+      <p><button @click="reset">Reset</button></p>
+      <h2>Ingredients:</h2>
+      <ul>
+        <li>Total flour: <span x-text="totalFlour"></span>g</li>
+        <li>Total water: <span x-text="totalWater"></span>g</li>
+        <li>Yeast: <span x-text="yeast"></span>g</li>
+        <li>Salt: <span x-text="salt"></span>g</li>
+      </ul>
+      <h2>Poolish:</h2>
+      <ul>
+        <li>Water: <span x-text="poolishWater"></span>g</li>
+        <li>Flour: <span x-text="poolishFlour"></span>g</li>
+        <li>Yeast: 1 pinch (~1g)</li>
+      </ul>
+      <h2>Dough:</h2>
+      <ul>
+        <li>Poolish: <span x-text="poolish"></span>g (all)</li>
+        <li>Water: <span x-text="doughWater"></span>g</li>
+        <li>Flour: <span x-text="doughFlour"></span>g</li>
+        <li>Yeast: <span x-text="doughYeats"></span>g</li>
+        <li>Salt: <span x-text="salt"></span>g</li>
+      </ul>
+
+      <h2>Preparation:</h2>
+      <ol>
+        <li>Make poolish, let ferment at room temperature for 14-16 hours.</li>
+        <li>Mix ingredients for dough and knead.</li>
+        <li>Bulk ferment for 50-70 minutes.</li>
+        <li>Divide, pre-shape and leave for 15 minutes.</li>
+        <li>Shape, put on couche and proof for 50-70 minutes again.</li>
+        <li>Pre-heat oven in the meantime.</li>
+        <li>Score and bake for ~25 minutes.</li>
+      </ol>
+    </div>
+    <footer>
+      <p>
+        Created by @iben based on the recipe of Kingdom Bread Tampa<br />
+        View the preparation
+        <a
+          href="https://www.youtube.com/watch?v=iai3Af_Q1OE&list=FLM0aAIM12DDTgzG_3MadixQ"
+          >here</a
+        >
+      </p>
+    </footer>
+  </body>
+  <script>
+    document.addEventListener("alpine:init", () => {
+      Alpine.data("pizza", function () {
+        return {
+          baguetteCount: this.$persist(4),
+          baguetteBallSize: this.$persist(220),
+          baguetteHydration: this.$persist(65),
+          baguettePoolishPercent: this.$persist(30),
+          baguetteYeastType: this.$persist("dry"),
+          baguetteSaltPercent: this.$persist(2),
+          get totalDough() {
+            return this.baguetteBallSize * this.baguetteCount;
+          },
+          get unit() {
+            // percents of flour + water + salt + yeast
+            let components =
+              100 +
+              parseInt(this.baguetteHydration) +
+              parseInt(this.baguetteSaltPercent) +
+              0.7;
+
+            return this.totalDough / components;
+          },
+          get totalFlour() {
+            const calculated = this.unit * 100;
+
+            return Math.round(calculated);
+          },
+          get totalWater() {
+            const calculated = this.unit * this.baguetteHydration;
+            return Math.round(calculated);
+          },
+          get poolishWater() {
+            return this.poolishFlour;
+          },
+          get poolishFlour() {
+            const calculated =
+              (this.totalFlour * this.baguettePoolishPercent) / 100;
+            return Math.round(calculated);
+          },
+          get yeast() {
+            let calculated = Math.ceil(this.unit * 0.7);
+
+            return calculated;
+          },
+          get doughYeats() {
+            return this.yeast - 1;
+          },
+          get doughWater() {
+            return Math.round(this.totalWater - this.poolishWater);
+          },
+          get poolish() {
+            return this.poolishFlour + this.poolishWater + this.yeast - 1;
+          },
+          get doughFlour() {
+            return this.totalFlour - this.poolishFlour;
+          },
+          get salt() {
+            return Math.round(this.unit * this.baguetteSaltPercent);
+          },
+          reset() {
+            this.baguetteCount = 3;
+            this.baguetteBallSize = 250;
+            this.baguetteHydration = 65;
+            this.baguettePoolishPercent = 30;
+            this.baguetteYeastType = "dry";
+            this.baguetteSaltPercent = 2;
+          },
+        };
+      });
+    });
+  </script>
+</html>

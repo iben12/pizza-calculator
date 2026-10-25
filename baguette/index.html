@@ -17,9 +17,41 @@
       ul {
         list-style-type: none;
       }
+
+      nav[aria-label="Main navigation"] {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      nav[aria-label="Main navigation"] a {
+        display: inline-block;
+        padding: 0.5rem 0.9rem;
+        border: 1px solid currentColor;
+        border-radius: 0.4rem;
+        background: Canvas;
+        color: CanvasText;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      nav[aria-label="Main navigation"] a[aria-current="page"] {
+        background: Highlight;
+        color: HighlightText;
+      }
+
+      nav[aria-label="Main navigation"] a:focus-visible {
+        outline: 3px solid Highlight;
+        outline-offset: 2px;
+      }
     </style>
   </head>
   <body>
+    <nav aria-label="Main navigation">
+      <a href="../index.html">Pizza</a>
+      <a href="index.html" aria-current="page">Baguette</a>
+      <a href="../focaccia/index.html">Focaccia</a>
+    </nav>
     <h1>Baguette Calculator</h1>
     <div x-data="pizza">
       <p>
